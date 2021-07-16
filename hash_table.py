@@ -14,25 +14,15 @@ class HashTable:
 
     def set(self, key, value):
         key_hash = self.hash(key)
-        key_value = [key, value]
 
         if self.map[key_hash] == None:
-            self.map[key_hash] = list([key_value])
-            return True
+            self.map[key_hash] = list([[key,value]])
         else:
             for pair in self.map[key_hash]:
                 if pair[0] == key:
-                    pair[1] = key_value
-                    return True
-            self.map[key_hash].append(key_value)
-            return True
+                    pair[1] = [key,value]
+                    return
+            self.map[key_hash].append([key,value])
 
     def hash(self, key) -> int:
         return hash(key) % self.size 
-
-
-H = HashTable()
-H.set('a', "2530")
-H.set(3, "233 Canyon Rd,Salt Lake City,UT,84103,EOD,2,Can only be on truck 2")
-
-print(H.map)

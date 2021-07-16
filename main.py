@@ -1,9 +1,9 @@
-import delivery_service
-
+# from package_delivery_service import PackageDeliveryService
+# from delivery_package import DeliveryPackage
 # Aaron Kummer 
 # Student ID
 
 class Main:
-    print(delivery_service.get_total_miles())
+    print("WGUPS Delivery service")
     
 
