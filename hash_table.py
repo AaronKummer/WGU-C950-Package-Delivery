@@ -28,6 +28,16 @@ class HashTable:
                     return True
             self.map[key_hash].append(key_value)
             return True
+    
+    # O(n)
+    def update(self, key, value):
+        key_hash = self.hash(key)
+        if self.map[key_hash] != None:
+            for pair in self.map[key_hash]:
+                if pair[0] == key:
+                    pair[1] = value
+                    print(pair[1])
+                    return True
 
     # O(1)
     def hash(self, key) -> int:
