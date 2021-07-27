@@ -8,7 +8,7 @@ class DeliveryPackage:
     size = ''
     note = ''
     weight = 0
-    status = ''
+    transits = []
 
     def __init__(self,id,address,city,state,zip,delivery_time,size,note) -> None:
         self.id = id
@@ -19,4 +19,5 @@ class DeliveryPackage:
         self.delivery_time = delivery_time
         self.size = size
         self.note = note
+        self.transits = []
         
