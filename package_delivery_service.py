@@ -33,7 +33,7 @@ class PackageDeliveryService:
     def get_package_data(self) -> None:
         self.packages = list(csv.reader(open('./data/packages.csv'), delimiter=','))
         for package in self.packages:
-            self.package_data.insert(int(package[0]),(package[1],package[2],package[3],package[4],package[5],package[6],package[7]))
+            self.package_data.insert(int(package[0]),(package[1],package[2],package[3],package[4],package[5],package[6],package[7],[]))
    
     # arranges data based on the notes and grouped packages from the csv and places package ids into trucks
     def load_trucks(self) -> None:
@@ -76,10 +76,9 @@ class PackageDeliveryService:
 
     # O(n)
     def set_package_status(self,minutes_traveled,package_id,status):
-        package = DeliveryPackage(int(package_id), *self.package_data.get(int(package_id)))
-        print(package)
-        # package.append((minutes_traveled, status))
-        # self.package_data.update(package.id,package)
+        package = self.package_data.get(package_id)
+        package[7].append((minutes_traveled, status))
+        self.package_data.update(package_id,package)
 
     def deliver_package(self,truck:DeliveryTruck, package):
         self.set_package_status(truck.time_traveled_minutes, package[0], "in transit")
@@ -104,7 +103,6 @@ class PackageDeliveryService:
     def get_package_status_at_time(self,package_id,time) -> DeliveryPackage :
         print("Getting transit information for package: ", package_id)
         package = DeliveryPackage(package_id, *self.package_data.get(package_id))
-        # package = self.package_data.get(package_id)
         print(package.transits)
         return package
 
