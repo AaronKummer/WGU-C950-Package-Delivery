@@ -11,11 +11,16 @@ class Main:
     if (main_selection == '2'):
         package_id_input = input("Please enter a package id: 1-40")
         if (int(package_id_input) in range (1,40)):
-        # time_input = input("Please enter a time as hours:minutes am/pm, example '8:30 am' \n")
-            package = package_delivery_service.get_package_status_at_time(int(package_id_input), "test")
-            # print(package.transits)
+            time_input = input("Please enter a time as hours:minutes am/pm, example '8:30 am' \n")
+            package = package_delivery_service.get_package_status_at_time(int(package_id_input), time_input)
+            
         else:
             print("that is not a valid package id")
+
+
+
+    
+
 
     
 

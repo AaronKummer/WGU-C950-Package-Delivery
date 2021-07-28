@@ -9,8 +9,9 @@ class DeliveryPackage:
     note = ''
     weight = 0
     transits = []
+    truck_id = 0
 
-    def __init__(self,id,address,city,state,zip,delivery_time,size,note,transits) -> None:
+    def __init__(self,id,address,city,state,zip,delivery_time,size,note,transits,truck_id) -> None:
         self.id = id
         self.address = address
         self.city = city
@@ -20,4 +21,5 @@ class DeliveryPackage:
         self.size = size
         self.note = note
         self.transits = transits
+        self.truck_id = truck_id
         

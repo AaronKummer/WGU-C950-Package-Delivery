@@ -36,7 +36,6 @@ class HashTable:
             for pair in self.map[key_hash]:
                 if pair[0] == key:
                     pair[1] = value
-                    print(pair[1])
                     return True
 
     # O(1)
