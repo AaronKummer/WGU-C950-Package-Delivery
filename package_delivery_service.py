@@ -6,17 +6,19 @@ from datetime import date,datetime,time,timedelta
 
 class PackageDeliveryService: 
     truck_speed = 18 #mph
-    truck_3_departure_time = timedelta(hours=10,minutes=30)
+    truck_3_started = False
     package_data = HashTable()
 
     # trucks 1 and 2 should be able to start their deliveries at 8 am
-    truck_one = DeliveryTruck(1,8, timedelta(hours=8))
-    truck_two = DeliveryTruck(2,8, timedelta(hours=8))
+    truck_one = DeliveryTruck(1, timedelta(hours=8))
+    truck_two = DeliveryTruck(2, timedelta(hours=8))
+    # truck three's start_delivery time will be determined later after truck 1 or 2 finishes
+    truck_three = DeliveryTruck(3, timedelta(hours=11))
 
     # truck 3 has late packages, so it will start a bit later
     # truck 3 will have a departure time set when  truck 1 or 2 finishes their routes. 
     # there are only two drivers. Ideally for this scenario that should be after 10:20 due to delays
-    truck_three = DeliveryTruck(3,10, truck_3_departure_time)
+    
     total_miles_for_all_trucks = 0
     total_packages_delivered = 0
     packages_delivered = []
@@ -29,7 +31,7 @@ class PackageDeliveryService:
         self.load_trucks()
         self.begin_deliveries(self.truck_one)
         self.begin_deliveries(self.truck_two)
-        self.begin_deliveries(self.truck_three)
+        
         print(self.total_packages_delivered, " deliveries were made in ", self.total_miles_for_all_trucks, "miles")
         # print(sorted(self.packages_delivered))
 
@@ -84,6 +86,7 @@ class PackageDeliveryService:
         package.transits.append((minutes_traveled, status))
         package.truck_id = truck_id
         self.package_data.update(package_id,package)
+        
 
     # O(n^3)
     def deliver_package(self,truck:DeliveryTruck, package):
@@ -93,18 +96,35 @@ class PackageDeliveryService:
         self.total_miles_for_all_trucks += float(package[1])
         hours_decimal_traveled = truck.distance_traveled / self.truck_speed
         truck.time_traveled_minutes += (hours_decimal_traveled*60) % 60 # convert hour decimal to minutes
-        truck.time.__add__(timedelta(minutes=truck.time_traveled_minutes))
         self.total_packages_delivered += 1 
-        # print("delivering package ID", package[0], "took ",(hours_decimal_traveled*60) % 60, " minutes")
-        # print("truck", truck.truck_id, " has traveled: ", truck.distance_traveled, "miles so far")
+
         truck.packages.remove(package[0])
         self.packages_delivered.append(package[0])
         self.set_package_status(truck.time_traveled_minutes, package[0], "delivered", truck.truck_id)
+        if (len(truck.packages) < 1 and self.truck_3_started == False ):
+            self.begin_deliveries_for_truck_3(truck)
+
         self.find_next_package_and_deliver(truck)
+
+    def begin_deliveries_for_truck_3(self,truck:DeliveryTruck):
+        self.truck_3_departure_time = truck.time_traveled_minutes
+        self.truck_3_started = True
+        self.begin_deliveries(self.truck_three)
 
     # Entrance to main delivery alrogrithm. Loops through packages for each truck and finds the next closest delivery
     def begin_deliveries(self, truck: DeliveryTruck) :
         self.find_next_package_and_deliver(truck)
+
+    # time calculations O(n^3)
+    def get_all_packages_status_at_time(self, time_input):
+        packages = []
+        # O(n)
+        for package_id in range(1,41):
+            package: DeliveryPackage = self.package_data.get(package_id)
+            packages.append(package)
+        # O(n)
+        for package in packages:
+            self.get_package_status_at_time(package.id, time_input)
 
     # time calculations O(n)
     def get_package_status_at_time(self,package_id,time) :
@@ -113,25 +133,22 @@ class PackageDeliveryService:
         minutes_between_delivery_start = 0
         parsed_time_input = self.parse_time_to_minutes(time)
 
-        # 530 is a hard coded value for minutes elapsed in the day at 8:00 am. Truck 1 and 2 leave at 8:30
+        # 480 is a hard coded value for minutes elapsed in the day at 8:00 am. Truck 1 and 2 leave at 8:00
         # TODO this is not scalable.. should be refactored.
-        print('package is on truck ', package.truck_id)
         if (package.truck_id == 1):
             minutes_between_delivery_start = parsed_time_input - 480
         elif (package.truck_id == 2):
             minutes_between_delivery_start = parsed_time_input - 480
         elif (package.truck_id == 3):
-            minutes_between_delivery_start = parsed_time_input - 630
+            minutes_between_delivery_start = parsed_time_input - self.truck_3_departure_time
 
-        print("minutes since the truck departed: ", minutes_between_delivery_start)
-        print(package.transits)
         if (minutes_between_delivery_start <= 0):
-             print("package ", package_id, "is still at the hub")
+             print("package", package_id, "is still at the hub")
         
         elif (minutes_between_delivery_start > 0 and minutes_between_delivery_start < package.transits[1][0]):
-            print("package ", package_id, "is in transit")
+            print("package", package_id, "is in transit")
         else :
-            print("package ", package_id, "has been delivered")
+            print("package", package_id, "has been delivered")
 
     def get_all_package_status_at_time(self,time):
         return self.package_data
@@ -142,7 +159,7 @@ class PackageDeliveryService:
         if ('am' in parts[1] and int(parts[0]) != 12):
             time_in_minutes = timedelta(hours=float(parts[0]), minutes=float(parts[1].split(' ')[0]))
         if('pm' in parts[1] and int(parts[0]) != 12):
-            time_in_minutes = timedelta(hours=float(parts[0]+12), minutes=float(parts[1].split(' ')[0]))
+            time_in_minutes = timedelta(hours=float(parts[0]) + 12, minutes=float(parts[1].split(' ')[0]))
         if('pm' in parts[1] and int(parts[0]) == 12):
             time_in_minutes = timedelta(hours=float(parts[0]), minutes=float(parts[1].split(' ')[0]))
         if('am' in parts[1] and int(parts[0]) == 12):

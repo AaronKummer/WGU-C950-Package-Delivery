@@ -10,11 +10,10 @@ class DeliveryTruck:
     time = datetime.timedelta
     departure_time = datetime.timedelta
 
-    def __init__(self,truck_id,hours,departure_time) -> None:
+    def __init__(self,truck_id,departure_time) -> None:
         self.packages = []
         self.priority_packages = []
         self.distance_traveled
         self.time_traveled_minutes = 0
         self.truck_id = truck_id
-        self.time = datetime.timedelta(hours=hours)
         self.departure_time = departure_time
