@@ -2,16 +2,28 @@ This Readme serves to satisfy the writing section of the assignment.
 There are comments throughout the code that help explain logic, and attempt to calculate Big O
 Screenshots of the program running are included folder
 
-B1:
-The packages are manually loaded into the trucks to simplify the sorting.
-Truck three is assigned the 'problematic' or delayed packages, and leaves after truck 1 or 2 finishes.
+A:
+This program uses a greedy approach type of algorithm to find the nearest package
+
+B1: (This is pseudo code)
+The packages are manually loaded into the trucks to simplify the sorting.  truck.packages = [1,2,3,4] where the numbers in the array are package ids
+
 The packages are then looped through one by one, and related to the addresses and distances data which is then stored in an array
-The distance for each location from the current location is calculated, and the shorted location is then selected and traveled to
+for package in packages: 
+    findNextNearestDelivery(package)
+    DeliverPackage(package)
+
+what goes on inside of findNextNearestDelivery(package)
+is a recursive algorithm that loops through the data in distances.csv and packages.csv and calls itself recursively.
+
 The package is then marked as delivered and removed from the truck upon reaching the next destination
 This process is repeated until there are no more packages on the truck.
 
 B2:
-This program was written using visual studio code as a text editor.
+written using visual studio code 1.52
+python v3
+windows 11
+
 
 B3: 
 There comments in the code that attempt to evaluate the time complexity for most of the intensive methods
@@ -26,9 +38,36 @@ I tried to make it easy to contain by making the packages and trucks into actual
 The program also attemps to be modular by separating concerns into small methods.
 
 B6: 
-I believe that the algorithm itself is a strenght of the program. It is dynamic and straightforward; east to understand.
-One of the downfalls of this program is that the code itself may be dense, particularly the time calculations and comparing 
-time inputs that a user can type in to minutes passed in a day, compared to minutes elapsed in terms of an individual truck.
+The hashing method used to insert items into the the hash table is not perfect
+and it causes a lot of collisions in buckets which causes the underlying linear
+storage to grow much larger than it needs to be.
+
+It however allows for an average insertion and lookup time-complexity of O(1).
+The table also allows for easy O(n) iteration over all items
+
+D1:
+The revision sent back :
+The submission states that a hash table was used in the program. A detailed explanation of the data structure, including how it organizes and relates the stored data, cannot be located.
+
+In computing, a hash table (hash map) is a data structure that implements an associative array abstract data type, a structure that can map keys to values. A hash table uses a hash function to compute an index, also called a hash code, into an array of buckets or slots, from which the desired value can be found. During lookup, the key is hashed and the resulting hash indicates where the corresponding value is stored.
+
+Ideally, the hash function will assign each key to a unique bucket, but most hash table designs employ an imperfect hash function, which might cause hash collisions where the hash function generates the same index for more than one key. Such collisions are typically accommodated in some way.
+
+In a well-dimensioned hash table, the average cost (number of instructions) for each lookup is independent of the number of elements stored in the table. Many hash table designs also allow arbitrary insertions and deletions of key–value pairs, at (amortized[2]) constant average cost per operation.[3][4]
+
+In many situations, hash tables turn out to be on average more efficient than search trees or any other table lookup structure. For this reason, they are widely used in many kinds of computer software, particularly for associative arrays, database indexing, caches, and sets.
+
+-Wikipedia (hashtables) 
+
+E: DeliveryPackage class has a property called 'transits' which stores the time when the truck it beginning to travel to that exact destination, and when it is delivered. transits[0] being the time started, and transits [1] being the time delivered.
+
+
+1.  Provide screenshots to show the status of all packages at a time between 8:35 a.m. and 9:25 a.m.
+
+2.  Provide screenshots to show the status of all packages at a time between 9:35 a.m. and 10:25 a.m.
+
+3.  Provide screenshots to show the status of all packages at a time between 12:03 p.m. and 1:12 p.m.
+
 
 I1: 
 One of the major strengths of the algorithm I used to find the nearest location for the next package to be delievered is its simplicity to understand the logic. It calculates the distances of all of the location from the current location, and delivers the package, and then repeats in a recursive fashion. Another strength of this algorithm is that it is easy to code... 
