@@ -2,7 +2,7 @@
 from delivery_package import DeliveryPackage
 from package_delivery_service import PackageDeliveryService
 
-# O(n+n^8) as worst case depending on options selected by the user
+# O(n^3) 
 class Main:
     print("WGUPS Delivery service")
     package_delivery_service = PackageDeliveryService()

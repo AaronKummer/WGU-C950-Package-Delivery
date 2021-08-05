@@ -11,9 +11,12 @@ class PackageDeliveryService:
 
     # trucks 1 and 2 should be able to start their deliveries at 8 am
     truck_one = DeliveryTruck(1, timedelta(hours=8))
+    truck_one.time_traveled_minutes = 480
     truck_two = DeliveryTruck(2, timedelta(hours=8))
+    truck_two.time_traveled_minutes = 480
     # truck three's start_delivery time will be determined later after truck 1 or 2 finishes
     truck_three = DeliveryTruck(3, timedelta(hours=11))
+    truck_two.time_traveled_minutes = 660
 
     # truck 3 has late packages, so it will start a bit later
     # truck 3 will have a departure time set when  truck 1 or 2 finishes their routes. 
@@ -89,7 +92,6 @@ class PackageDeliveryService:
 
     # O(n^3)
     def deliver_package(self,truck:DeliveryTruck, package):
-        self.set_package_status(truck.time_traveled_minutes, package[0], "in transit", truck.truck_id)
         truck.distance_traveled += float(package[1])
         truck.current_address_index = package[3]
         self.total_miles_for_all_trucks += float(package[1])
@@ -132,35 +134,27 @@ class PackageDeliveryService:
 
     # time calculations O(n)
     def get_package_status_at_time(self,package_id,time) :
-        # print("Getting transit information for package: ", package_id)
         package:DeliveryPackage = self.package_data.get(package_id)
         
-        minutes_between_delivery_start = 0
         parsed_time_input = self.parse_time_to_minutes(time)
-
-        # print("time input", parsed_time_input)
-        # print("truck one departure time is", str(self.truck_one.departure_time))
-        # print("truck two departure time is", str(self.truck_two.departure_time))
-        # print("truck three departure time is", str(self.truck_three.departure_time))
-
+        
+        departure_time = 0
         if (package.truck_id == 1):
-            minutes_between_delivery_start = parsed_time_input - 480
+            departure_time = self.truck_one.departure_time.seconds / 60
         elif (package.truck_id == 2):
-            minutes_between_delivery_start = parsed_time_input - 480
+            departure_time = self.truck_two.departure_time.seconds / 60
         elif (package.truck_id == 3):
-            minutes_between_delivery_start = parsed_time_input - 580
-            
-        # print('minutes between delivery start', minutes_between_delivery_start)
+            departure_time = self.truck_three.departure_time.seconds / 60
 
-        if (minutes_between_delivery_start <= 0):
+        if (parsed_time_input < departure_time):
              print("package", package_id, "is still at the hub")
-        elif (minutes_between_delivery_start > 0 and minutes_between_delivery_start < package.transits[1][0]):
+        elif (parsed_time_input > departure_time and parsed_time_input < package.transits[0][0]):
             print("package", package_id, "is in transit at this time")
         else :
             print("package", package_id, "was been delivered at", self.get_formated_delivery_time(package))
 
     def  get_formated_delivery_time(self,package:DeliveryPackage):
-        time_delta = timedelta(minutes=package.transits[1][0])
+        time_delta = timedelta(minutes=package.transits[0][0])
         return str(time_delta)
 
     def get_all_package_status_at_time(self,time):

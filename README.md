@@ -59,15 +59,13 @@ In many situations, hash tables turn out to be on average more efficient than se
 
 -Wikipedia (hashtables) 
 
-E: DeliveryPackage class has a property called 'transits' which stores the time when the truck it beginning to travel to that exact destination, and when it is delivered. transits[0] being the time started, and transits [1] being the time delivered.
+D1 continued:
 
+My hash table is very simple and does not have a delete method as I feel the project did not require that functionality.
+There is a simple hash function used to smear the elements across the array and chaining is implemented to prevent collisions.
+The key is stored as the package id itself, and then the value is a DeliveryPackage object which can be found in DeliveryPackage.py
 
-1.  Provide screenshots to show the status of all packages at a time between 8:35 a.m. and 9:25 a.m.
-
-2.  Provide screenshots to show the status of all packages at a time between 9:35 a.m. and 10:25 a.m.
-
-3.  Provide screenshots to show the status of all packages at a time between 12:03 p.m. and 1:12 p.m.
-
+E: DeliveryPackage class has a property called 'transits' which stores the time the package is delivered
 
 I1: 
 One of the major strengths of the algorithm I used to find the nearest location for the next package to be delievered is its simplicity to understand the logic. It calculates the distances of all of the location from the current location, and delivers the package, and then repeats in a recursive fashion. Another strength of this algorithm is that it is easy to code... 
